@@ -12,11 +12,13 @@ const candyColors = [
 
 const App = () => {
   const [currentColorArrangement, setCurrentColorArrangement] = useState([])
+  const [squareBeingDragged, setSquareBeingDragged] = useState(null)
+  const [squareBeingReplaced, setSquareBeingReplaced] = useState(null)
 
 
 
   const checkForColumOfFour = () => {
-    for (let i = 0; i < 39; i++) {
+    for (let i = 0; i <= 39; i++) {
       const columnOfFour = [i, i + width, i + width * 2, i + width * 3]
       const decidedColor = currentColorArrangement[i]
 
@@ -28,7 +30,7 @@ const App = () => {
 
 
   const checkForColumOfThree = () => {
-    for (let i = 0; i < 47; i++) {
+    for (let i = 0; i <= 47; i++) {
       const columnOfThree = [i, i + width, i + width * 2]
       const decidedColor = currentColorArrangement[i]
 
@@ -67,7 +69,7 @@ const App = () => {
   }
 
   const moveIntoSquareBelow = () => {
-    for (let i = 0; i < 64 - width; i ++) {
+    for (let i = 0; i <= 55; i ++) {
       const firstRow = [0, 1, 2, 3, 4, 5, 6, 7]
       const isFirstRow = firstRow.includes(i)
 
@@ -81,6 +83,33 @@ const App = () => {
         currentColorArrangement[i] = ''
       }
     }
+  }
+
+  const dragStart = (e) => {
+    // console.log(e.target)
+    console.log('Drag Start')
+    setSquareBeingDragged(e.target)
+  }
+
+  const dragDrop = (e) => {
+    // console.log(e.target)
+    console.log('Drag Drop')
+    setSquareBeingReplaced(e.target)
+  }
+
+  const dragEnd = (e) => {
+    // console.log(e.target)
+    console.log('Drag End')
+
+    const squareBeingDraggedId = parseInt(squareBeingDragged.getAttribute('data-id'))
+    const squareBeingReplacedId = parseInt(squareBeingReplaced.getAttribute('data-id'))
+
+    currentColorArrangement[squareBeingReplacedId] = squareBeingDragged.style.backgroundColor
+    currentColorArrangement[squareBeingDraggedId] = squareBeingReplaced.style.backgroundColor
+
+    console.log('squareBeingDraggedId', squareBeingDraggedId)
+    console.log('squareBeingReplacedId', squareBeingReplacedId)
+
   }
 
 
@@ -112,7 +141,8 @@ const App = () => {
     // checkForColumOfThree()
   }, [checkForColumOfFour, checkForRowOfFour, checkForColumOfThree, checkForRowOfThree, moveIntoSquareBelow, currentColorArrangement])
 
-  console.log(currentColorArrangement)
+  // console.log(currentColorArrangement)
+
   return (
     <div className="app" >
       <div className="game">
@@ -120,7 +150,15 @@ const App = () => {
           <img
             key={index}
             style={{ backgroundColor: candyColor }}
-            // alt={candyColor}
+            alt={candyColor}
+            data-id = {index}
+            draggable = {true}
+            onDragStart = {dragStart}
+            onDragOver = {(e) => e.preventDefault()}
+            onDragEnter = {(e) => e.preventDefault()}
+            onDragLeave = {(e) => e.preventDefault()}
+            onDrop = {dragDrop}
+            onDragEnd = {dragEnd}
           />
         ))}
 
