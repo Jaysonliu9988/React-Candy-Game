@@ -24,6 +24,7 @@ const App = () => {
 
       if (columnOfFour.every(square => currentColorArrangement[square] === decidedColor)) {
         columnOfFour.forEach(square => currentColorArrangement[square] = '')
+        return true
       }
     }
   }
@@ -36,6 +37,8 @@ const App = () => {
 
       if ( columnOfThree.every(square => currentColorArrangement[square] === decidedColor)) {
         columnOfThree.forEach(square => currentColorArrangement[square] = '')
+        return true
+
       }
     }
   }  
@@ -50,6 +53,8 @@ const App = () => {
 
       if (rowOfThree.every(square => currentColorArrangement[square] === decidedColor)) {
         rowOfThree.forEach(square => currentColorArrangement[square] = '')
+        return true
+
       }
     }
   }
@@ -64,6 +69,8 @@ const App = () => {
 
       if (rowOfFour.every(square => currentColorArrangement[square] === decidedColor)) {
         rowOfFour.forEach(square => currentColorArrangement[square] = '')
+        return true
+
       }
     }
   }
@@ -109,6 +116,30 @@ const App = () => {
 
     console.log('squareBeingDraggedId', squareBeingDraggedId)
     console.log('squareBeingReplacedId', squareBeingReplacedId)
+
+    const validMoves = [
+      squareBeingDraggedId - 1,
+      squareBeingDraggedId - width,
+      squareBeingDraggedId + 1,
+      squareBeingDraggedId + width
+    ]
+
+    const validMove = validMoves.includes(squareBeingReplacedId)
+
+    const isAColumnOfFour = checkForColumOfFour()
+    const isARowOfFour = checkForRowOfFour()
+    const isAColumnOfThree = checkForColumOfThree()
+    const isARowOfThree = checkForRowOfThree()
+
+    if (squareBeingReplacedId && validMove && (isAColumnOfFour || isARowOfFour || isAColumnOfThree || isARowOfThree)) {
+      setSquareBeingDragged(null)
+      setSquareBeingReplaced(null)
+      
+    } else {
+      currentColorArrangement[squareBeingReplacedId] = squareBeingReplaced.style.backgroundColor
+      currentColorArrangement[squareBeingDraggedId] = squareBeingDragged.style.backgroundColor
+      setCurrentColorArrangement([...currentColorArrangement])
+    }
 
   }
 
